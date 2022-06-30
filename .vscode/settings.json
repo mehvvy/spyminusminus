@@ -1,0 +1,28 @@
+{
+    "Lua.diagnostics.globals": [
+        // Ashita v4
+        "ashita",
+        "AshitaCore",
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ],
+    "Lua.hint.enable": true,
+    "Lua.hint.setType": true,
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.path": [
+        "?.lua",
+        "?/init.lua",
+        "../libs/",
+    ],
+    "Lua.workspace.library": [
+        "../libs/",
+        "./ashita/types",
+    ],
+    "Lua.workspace.maxPreload": 16000,
+    "Lua.workspace.preloadFileSize": 10000,
+    "Lua.workspace.ignoreDir": [
+        ".vscode",
+    ],
+    "editor.renderWhitespace": "all",
+}
