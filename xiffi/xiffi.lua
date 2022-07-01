@@ -233,7 +233,7 @@ struct PositionPacket {
 ]]
 
 ---@class XiEvent
----@field pc number
+---@field pc integer
 ---@field bytecode table
 
 ---@class PlaceholderModelType
@@ -279,46 +279,59 @@ struct PositionPacket {
 ---@field Rotation integer
 ---@field Unknown0 integer
 
+--- Cast away the ffi.cdata* type
+---@param ptr integer
+---@return any
+local function cast(ct, ptr)
+    return ffi.cast(ct, ptr)
+end
+
 ---@param ptr integer
 ---@return XiEvent
 xiffi.toXiEvent = function (ptr)
-    return ffi.cast('struct XiEvent*', ptr)
+    return cast('struct XiEvent*', ptr)
+end
+
+---@param ptr integer
+---@return PlaceholderModelType
+xiffi.toPlaceholderModelType = function (ptr)
+    return cast('struct PlaceholderModelType*', ptr)
 end
 
 ---@param ptr integer
 ---@return EventPacket
 xiffi.toEventPacket = function (ptr)
-    return ffi.cast('struct EventPacket*', ptr)
+    return cast('struct EventPacket*', ptr)
 end
 
 ---@param ptr integer
 ---@return EventParamPacket
 xiffi.toEventParamPacket = function (ptr)
-    return ffi.cast('struct EventParamPacket*', ptr)
+    return cast('struct EventParamPacket*', ptr)
 end
 
 ---@param ptr integer
 ---@return ReleasePacket
 xiffi.toReleasePacket = function (ptr)
-    return ffi.cast('struct ReleasePacket*', ptr)
+    return cast('struct ReleasePacket*', ptr)
 end
 
 ---@param ptr integer
 ---@return EventUpdatePacket
 xiffi.toEventUpdatePacket = function (ptr)
-    return ffi.cast('struct EventUpdatePacket*', ptr)
+    return cast('struct EventUpdatePacket*', ptr)
 end
 
 ---@param ptr integer
 ---@return EventUpdateStringPacket
 xiffi.toEventUpdateStringPacket = function (ptr)
-    return ffi.cast('struct EventUpdateStringPacket*', ptr)
+    return cast('struct EventUpdateStringPacket*', ptr)
 end
 
 ---@param ptr integer
 ---@return PositionPacket
 xiffi.toPositionPacket = function (ptr)
-    return ffi.cast('struct PositionPacket*', ptr)
+    return cast('struct PositionPacket*', ptr)
 end
 
 return xiffi

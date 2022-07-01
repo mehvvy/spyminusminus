@@ -8,7 +8,6 @@ require('common')
 
 local chat = require('chat')
 
-local ffi = require('ffi')
 local imgui = require('imgui')
 
 local eventvm = require('eventvm/eventvm')
@@ -230,6 +229,7 @@ local function renderPacketLog()
 end
 
 ---@param e Entity
+---@param title string
 local function renderEntity(e, title)
     local flags = bit.bor(
         ImGuiWindowFlags_NoDecoration,
@@ -256,8 +256,7 @@ local function renderEntity(e, title)
 
         local Model = e.WarpPointer
         if Model ~= 0 then
-            ---@type PlaceholderModelType
-            local m = ffi.cast('struct PlaceholderModelType*', Model)
+            local m = xiffi.toPlaceholderModelType(Model)
             imgui.TextColored(ColorWhite, string.format('%f', m.ModelSize[0]))
             imgui.TextColored(ColorWhite, string.format('%f', m.ModelSize[1]))
             imgui.TextColored(ColorWhite, string.format('%f', m.ModelSize[2]))
