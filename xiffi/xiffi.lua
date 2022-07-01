@@ -209,27 +209,6 @@ struct ReleasePacket {
     dword EventId : 24;
 };
 
-struct PositionPacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    float X;
-    float Y;
-    float Z;
-    dword EntityId;
-    word EntityIndex;
-    byte Mode;
-    byte Rotation;
-    undefined field11_0x18;
-    undefined field12_0x19;
-    undefined field13_0x1a;
-    undefined field14_0x1b;
-    byte Unknown0;
-    undefined field16_0x1d;
-    undefined field17_0x1e;
-    undefined field18_0x1f;
-};
 ]]
 
 ---@class XiEvent
@@ -268,16 +247,6 @@ struct PositionPacket {
 ---@class ReleasePacket
 ---@field Type integer
 ---@field EventId integer
-
----@class PositionPacket
----@field EntityId integer
----@field EntityIndex integer
----@field Mode integer
----@field X number
----@field Y number
----@field Z number
----@field Rotation integer
----@field Unknown0 integer
 
 --- Cast away the ffi.cdata* type
 ---@param ptr integer
@@ -326,6 +295,14 @@ end
 ---@return EventUpdateStringPacket
 xiffi.toEventUpdateStringPacket = function (ptr)
     return cast('struct EventUpdateStringPacket*', ptr)
+end
+
+require('xiffi.entity')
+
+---@param ptr integer
+---@return EntityUpdatePacket
+xiffi.toEntityUpdatePacket = function (ptr)
+    return cast('EntityUpdatePacket*', ptr)
 end
 
 ---@param ptr integer
