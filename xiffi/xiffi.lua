@@ -154,61 +154,6 @@ struct PlaceholderModelType {
     byte tmp2[0xc0c - 0x878 - 0x26];
 };
 
-struct EventPacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    dword EntityId;
-    word EntityIndex;
-    word ZoneId;
-    word EventId;
-    word Flags0;
-    word EventZoneId;
-    word Flags1;
-};
-
-struct EventParamPacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    dword EntityId;
-    dword Params[8];
-    word EntityIndex;
-    word ZoneId;
-    word EventId;
-    word Flags0;
-    word EventZoneId;
-    word Flags1;
-};
-
-struct EventUpdatePacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    dword Params[8];
-};
-
-struct EventUpdateStringPacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    byte unused[0x24];
-    dword data[4][4];
-};
-
-struct ReleasePacket {
-    undefined field0_0x0;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    dword Type : 8;
-    dword EventId : 24;
-};
-
 ]]
 
 ---@class XiEvent
@@ -218,35 +163,6 @@ struct ReleasePacket {
 ---@class PlaceholderModelType
 ---@field ModelSize number[4]
 ---@field Cib integer[38]
-
----@class EventPacket
----@field EntityId integer
----@field EntityIndex integer
----@field ZoneId integer
----@field EventId integer
----@field EventZoneId integer
----@field Flags0 integer
----@field Flags1 integer
-
----@class EventParamPacket
----@field EntityId integer
----@field EntityIndex integer
----@field ZoneId integer
----@field EventId integer
----@field EventZoneId integer
----@field Flags0 integer
----@field Flags1 integer
----@field Params table
-
----@class EventUpdatePacket
----@field Params table
-
----@class EventUpdateStringPacket
----@field data table
-
----@class ReleasePacket
----@field Type integer
----@field EventId integer
 
 --- Cast away the ffi.cdata* type
 ---@param ptr integer
@@ -267,35 +183,7 @@ xiffi.toPlaceholderModelType = function (ptr)
     return cast('struct PlaceholderModelType*', ptr)
 end
 
----@param ptr integer
----@return EventPacket
-xiffi.toEventPacket = function (ptr)
-    return cast('struct EventPacket*', ptr)
-end
-
----@param ptr integer
----@return EventParamPacket
-xiffi.toEventParamPacket = function (ptr)
-    return cast('struct EventParamPacket*', ptr)
-end
-
----@param ptr integer
----@return ReleasePacket
-xiffi.toReleasePacket = function (ptr)
-    return cast('struct ReleasePacket*', ptr)
-end
-
----@param ptr integer
----@return EventUpdatePacket
-xiffi.toEventUpdatePacket = function (ptr)
-    return cast('struct EventUpdatePacket*', ptr)
-end
-
----@param ptr integer
----@return EventUpdateStringPacket
-xiffi.toEventUpdateStringPacket = function (ptr)
-    return cast('struct EventUpdateStringPacket*', ptr)
-end
+--- Entity
 
 require('xiffi.entity')
 
@@ -308,7 +196,47 @@ end
 ---@param ptr integer
 ---@return PositionPacket
 xiffi.toPositionPacket = function (ptr)
-    return cast('struct PositionPacket*', ptr)
+    return cast('PositionPacket*', ptr)
+end
+
+--- Event
+
+require('xiffi.event')
+
+---@param ptr integer
+---@return EventPacket
+xiffi.toEventPacket = function (ptr)
+    return cast('EventPacket*', ptr)
+end
+
+---@param ptr integer
+---@return EventStringPacket
+xiffi.toEventStringPacket = function (ptr)
+    return cast('EventStringPacket*', ptr)
+end
+
+---@param ptr integer
+---@return EventParamPacket
+xiffi.toEventParamPacket = function (ptr)
+    return cast('EventParamPacket*', ptr)
+end
+
+---@param ptr integer
+---@return EventUpdatePacket
+xiffi.toEventUpdatePacket = function (ptr)
+    return cast('EventUpdatePacket*', ptr)
+end
+
+---@param ptr integer
+---@return EventUpdateStringPacket
+xiffi.toEventUpdateStringPacket = function (ptr)
+    return cast('EventUpdateStringPacket*', ptr)
+end
+
+---@param ptr integer
+---@return ReleasePacket
+xiffi.toReleasePacket = function (ptr)
+    return cast('ReleasePacket*', ptr)
 end
 
 return xiffi
