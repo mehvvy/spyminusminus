@@ -254,13 +254,19 @@ ffi.cdef[[
 
         u32 ClaimEntityId;
 
+        /* Entity Type / Appearance */
+
+        /*
+           work around padding and split the struct into two
+           separate unions.
+          */
+
         u16 EntityType : 3;
         u16 _30_3 : 13;
 
-        /* work around padding and split the struct into two */
         union {
             /*
-              Entity Type 0
+              Entity Types 0, 5 and 6
              */
             struct {
                u16 ModelId;
