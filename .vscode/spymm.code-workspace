@@ -1,0 +1,21 @@
+{
+	"folders": [{
+		"path": ".."
+	}],
+	"settings": {
+		"Lua.diagnostics.globals": [
+		],
+		"Lua.diagnostics.disable": [
+			"lowercase-global"
+		],
+		"Lua.hint.enable": true,
+		"Lua.hint.setType": true,
+		"Lua.runtime.version": "LuaJIT",
+		"Lua.workspace.maxPreload": 16000,
+		"Lua.workspace.preloadFileSize": 10000,
+		"Lua.workspace.ignoreDir": [
+			".vscode",
+			"spyminusminus.lua",
+		]
+	}
+}
