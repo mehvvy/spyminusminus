@@ -5,6 +5,12 @@ local xiffi = require('xiffi/xiffi')
 local parsers = require('spymm/parsers')
 
 local iParsers = {
+    [0x00A] = function (row)
+        local p = xiffi.toZoneInPacket(row.data)
+
+        parsers.zoneInPacket(row, p)
+    end,
+
     [0x00E] = function (row)
         local p = xiffi.toEntityUpdatePacket(row.data)
 
@@ -33,6 +39,12 @@ local iParsers = {
         local p = xiffi.toReleasePacket(row.data)
 
         parsers.releasePacket(row, p)
+    end,
+
+    [0x057] = function (row)
+        local p = xiffi.toWeatherPacket(row.data)
+
+        parsers.weatherPacket(row, p)
     end,
 
     [0x05B] = function (row)

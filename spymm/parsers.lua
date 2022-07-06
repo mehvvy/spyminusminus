@@ -21,8 +21,9 @@ end
 
 local entity = require('spymm.entity')
 local event = require('spymm.event')
+local zone = require('spymm.zone')
 
 ---@class parsers
-local parsers = merge(entity, event)
+local parsers = merge(entity, event, zone)
 
 return parsers
