@@ -105,7 +105,7 @@ local function extractName(s)
     local l = 0
 
     if s[0] == 1 then
-        print('oh!')
+        -- for certain classes of entities, byte 0x34=1 is used for extended-length names
         l = l + 1
     end
 
