@@ -128,3 +128,5 @@ ffi.cdef[[
         u32 EventId : 24;
     } ReleasePacket;
 ]]
+
+--- also see ZoneInPacket
