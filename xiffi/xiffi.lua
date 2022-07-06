@@ -239,4 +239,20 @@ xiffi.toReleasePacket = function (ptr)
     return cast('ReleasePacket*', ptr)
 end
 
+--- Zone
+
+require('xiffi.zone')
+
+---@param ptr integer
+---@return ZoneInPacket
+xiffi.toZoneInPacket = function (ptr)
+    return cast('ZoneInPacket*', ptr)
+end
+
+---@param ptr integer
+---@return WeatherPacket
+xiffi.toWeatherPacket = function (ptr)
+    return cast('WeatherPacket*', ptr)
+end
+
 return xiffi
