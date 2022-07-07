@@ -23,6 +23,10 @@ local function message(fmt, ...)
     print(chat.header(addon.name):append(chat.message(string.format(fmt, ...))))
 end
 
+local function reset()
+    globals.messages = {}
+end
+
 local function parseSynthSuggestionPacket(e)
     table.insert(globals.messages, 'SynthSuggestion')
 end
@@ -151,6 +155,8 @@ ashita.events.register('command', 'command_cb', function (e)
             elseif args[2] == 'hide' then
                 message('Visible: OFF')
                 globals.visible = false
+            elseif args[2] == 'reset' then
+                reset()
             end
         end
     end
@@ -210,7 +216,7 @@ local function renderPacketLog()
         ImGuiWindowFlags_NoFocusOnAppearing)
 
     imgui.SetNextWindowBgAlpha(0.6)
-    imgui.SetNextWindowSize({960, 480});
+    imgui.SetNextWindowSize({960, 480})
     imgui.SetNextWindowSizeConstraints({ -1, -1, }, { FLT_MAX, FLT_MAX, })
 
     if imgui.Begin('PacketLog', true, flags) then
