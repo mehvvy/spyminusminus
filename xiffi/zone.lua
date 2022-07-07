@@ -26,24 +26,28 @@ ffi.cdef[[
 ---@field TransitionLength integer
 ---@field PrevTransitionLength integer
 ---@field SubZoneId integer
+---@field ZoneInEntitiesRequired integer
 local ZoneInPacket = {}
 
 ffi.cdef[[
     typedef struct ZoneInPacket {
         u8 unimplemented0[0x40];
-        u16 ZoneInEventFileId;
-        u8 unimplemented1[0x20];
-        u16 ZoneInEventZoneId;
-        u16 ZoneInEventId;
-        u16 ZoneInEventFlags0;
-        u16 Weather;
-        u16 PrevWeather;
-        u32 VanaMinute;
-        u32 PrevVanaMinute;
-        u16 TransitionLength;
-        u16 PrevTransitionLength;
+        u16 ZoneInEventFileId; // 0x40
+        u8 unimplemented1[0x62 - 0x42];
+        u16 ZoneInEventZoneId; // 0x62
+        u16 ZoneInEventId; // 0x64
+        u16 ZoneInEventFlags0; // 0x66
+        u16 Weather; // 0x68
+        u16 PrevWeather; // 0x6a
+        u32 VanaMinute; // 0x6c
+        u32 PrevVanaMinute; // 0x70
+        u16 TransitionLength; // 0x74
+        u16 PrevTransitionLength; // 0x76
         u8 unimplemented2[0x9E - 0x78];
-        u16 SubZoneId;
+        u16 SubZoneId; // 0x9e
+        u8 unimplemented3[0xAC - 0xA0];
+        u16 ZoneInEntitiesRequired; // 0xac
+        u8 unimplemented4[0x104 - 0xAE];
     } ZoneInPacket;
 ]]
 
