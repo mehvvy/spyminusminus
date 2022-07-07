@@ -6,13 +6,13 @@ local ffi = require('ffi')
 ---@field EntityId integer
 ---@field EntityIndex integer
 ---@field UpdateFlags01 boolean
----@field UpdateFlags02 integer
----@field UpdateFlags04 integer
----@field UpdateFlags08 integer
----@field UpdateFlags10 integer
----@field UpdateFlags20 integer
----@field UpdateFlags40 integer
----@field UpdateFlags80 integer
+---@field UpdateFlags02 boolean
+---@field UpdateFlags04 boolean
+---@field UpdateFlags08 boolean
+---@field UpdateFlags10 boolean
+---@field UpdateFlags20 boolean
+---@field UpdateFlags40 boolean
+---@field UpdateFlags80 boolean
 ---@field Rotation integer
 ---@field PosX number
 ---@field PosY number
@@ -22,7 +22,7 @@ local ffi = require('ffi')
 ---@field _18_13 integer
 ---@field _18_14 integer
 ---@field _18_15 integer
----@field _18_16 integer
+---@field RequiredEntity boolean
 ---@field CursorEntityIndex integer
 ---@field Flags1 integer
 ---@field MovementSpeed integer
@@ -124,7 +124,7 @@ byte o.    bit o.      length      update       name
 18             13           1           1       ?
 18             14           1           1       ?
 18             15           1           1       ?
-18             16           1           1?      ? (unused?)
+18             16           1           4       RequiredEntity
 18             17          15           1       CursorEntityIndex
 1C              0           8           1       MovementSpeed?
 1C              8           8           1       AnimationSpeed?
@@ -234,7 +234,7 @@ ffi.cdef[[
                 u32 _18_13 : 1;
                 u32 _18_14 : 1;
                 u32 _18_15 : 1;
-                u32 _18_16 : 1;
+                bool RequiredEntity : 1; // Used by ZoneInPacket.ZoneInEntitiesRequired
                 u32 CursorEntityIndex : 15;
             };
             u32 Flags0;

@@ -149,7 +149,7 @@ parsers.entityUpdatePacket = function (row, p)
     if p.UpdateFlags01 then
         printf('           Update01: X:%5.5f Y:%5.5f Z:%5.5f R:%3d\n', p.PosX, p.PosY, p.PosZ, p.Rotation)
         printf('                     CE:%3d MS:%3d AS:%3d\n', p.CursorEntityIndex, p.MovementSpeed, p.AnimationSpeed)
-        printf('                     1800:%4d 1813:%d 1814:%d 1815:%d 1816:%d\n', p._18_0, p._18_13, p._18_14, p._18_15, p._18_16)
+        printf('                     1800:%4d 1813:%d 1814:%d 1815:%d\n', p._18_0, p._18_13, p._18_14, p._18_15)
     end
 
     if p.UpdateFlags02 then
@@ -157,7 +157,7 @@ parsers.entityUpdatePacket = function (row, p)
     end
 
     if p.UpdateFlags04 then
-        printf('           Update04: MS:%d TR:%3d HP:%3d ST:%s\n', p.ModelSize, p.TargetRadius, p.HPP, EntityStateNames[p.ServerStatus])
+        printf('           Update04: MS:%d TR:%3d HP:%3d ST:%s RQ:%d\n', p.ModelSize, p.TargetRadius, p.HPP, EntityStateNames[p.ServerStatus], p.RequiredEntity and 1 or 0)
     end
 
     if p.EntityType == 0 then
