@@ -38,7 +38,40 @@ local addon = {}
 ---@type addon
 _G.addon = nil
 
----@type fun(EntityIndex: number): Entity
+---@class ITarget
+local ITarget = {}
+
+---@param TargetIndex integer
+---@return integer
+function ITarget:GetTargetIndex(TargetIndex) end
+
+---@class IMemoryManager
+local IMemoryManager = {}
+
+---@return ITarget
+function IMemoryManager:GetTarget() end
+
+---@class IAshitaCore
+local IAshitaCore = {}
+
+---@return IMemoryManager
+function IAshitaCore:GetMemoryManager() end
+
+---@type IAshitaCore
+_G.AshitaCore = nil
+
+---@class ashita_events
+---@field register fun(event: string, event_id: string, callback: any)
+local ashita_events = {}
+
+---@class ashita
+---@field events ashita_events
+local ashita = {}
+
+---@type ashita
+_G.ashita = ashita
+
+---@type fun(EntityIndex: integer): Entity
 _G.GetEntity = nil
 
 ---@type fun(): Entity

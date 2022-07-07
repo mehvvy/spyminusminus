@@ -4,9 +4,6 @@
 	}],
 	"settings": {
 		"Lua.diagnostics.globals": [
-			// Ashita v4
-			"ashita",
-			"AshitaCore",
 		],
 		"Lua.diagnostics.disable": [
 			"lowercase-global"
