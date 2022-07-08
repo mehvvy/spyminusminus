@@ -139,8 +139,7 @@ parsers.entityUpdatePacket = function (row, p)
         end
     end
 
-    printf('                     CL:%8d 01:%d 02:%d 04:%d 08:%d 10:%d 20:%d 40:%d 80:%d\n',
-        p.ClaimEntityId,
+    printf('                     01:%d 02:%d 04:%d 08:%d 10:%d 20:%d 40:%d 80:%d\n',
         p.UpdateFlags01 and 1 or 0, p.UpdateFlags02 and 1 or 0,
         p.UpdateFlags04 and 1 or 0, p.UpdateFlags08 and 1 or 0,
         p.UpdateFlags10 and 1 or 0, p.UpdateFlags20 and 1 or 0,
@@ -150,14 +149,21 @@ parsers.entityUpdatePacket = function (row, p)
         printf('           Update01: X:%5.5f Y:%5.5f Z:%5.5f R:%3d\n', p.PosX, p.PosY, p.PosZ, p.Rotation)
         printf('                     CE:%3d MS:%3d AS:%3d\n', p.CursorEntityIndex, p.MovementSpeed, p.AnimationSpeed)
         printf('                     1800:%4d 1813:%d 1814:%d 1815:%d\n', p._18_0, p._18_13, p._18_14, p._18_15)
+        printf('                     2000:%d 2001:%d 2002:%d\n', p._20_0, p._20_1, p._20_2);
     end
 
     if p.UpdateFlags02 then
-
+        printf('           Update02: CL:%8d\n', p.ClaimEntityId)
+        if not p.UpdateFlags01 then
+            printf('                   2000:%d 2001:%d 2002:%d\n', p._20_0, p._20_1, p._20_2);
+        end
     end
 
     if p.UpdateFlags04 then
         printf('           Update04: MS:%d TR:%3d HP:%3d ST:%s RQ:%d\n', p.ModelSize, p.TargetRadius, p.HPP, EntityStateNames[p.ServerStatus], p.RequiredEntity and 1 or 0)
+        if not p.UpdateFlags01 and not p.UpdateFlags02 then
+            printf('                   2000:%d 2001:%d 2002:%d\n', p._20_0, p._20_1, p._20_2);
+        end
     end
 
     if p.EntityType == 0 then

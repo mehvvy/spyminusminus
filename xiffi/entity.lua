@@ -191,6 +191,7 @@ byte o.    bit o.      length      update       name
 28             29           1           4       ?
 28             30           1           4       ?
 28             31           1           4       ?
+2C              0          32           2       ClaimEntityId
 ]]
 
 ffi.cdef[[
