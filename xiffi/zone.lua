@@ -15,6 +15,7 @@ ffi.cdef[[
 ]]
 
 ---@class ZoneInPacket
+---@field ZoneId integer
 ---@field ZoneInEventFileId integer
 ---@field ZoneInEventZoneId integer
 ---@field ZoneInEventId integer
@@ -27,11 +28,17 @@ ffi.cdef[[
 ---@field PrevTransitionLength integer
 ---@field SubZoneId integer
 ---@field ZoneInEntitiesRequired integer
+---@field MenuConfigFlags integer
+---@field ChatFilterFlags0 integer
+---@field ChatFilterFlags1 integer
+---@field Unknown100 integer
 local ZoneInPacket = {}
 
 ffi.cdef[[
     typedef struct ZoneInPacket {
-        u8 unimplemented0[0x40];
+        u8 unimplemented0[0x30];
+        u32 ZoneId; // 0x30
+        u8 unimplemented5[0x40 - 0x34];
         u16 ZoneInEventFileId; // 0x40
         u8 unimplemented1[0x62 - 0x42];
         u16 ZoneInEventZoneId; // 0x62
@@ -47,7 +54,11 @@ ffi.cdef[[
         u16 SubZoneId; // 0x9e
         u8 unimplemented3[0xAC - 0xA0];
         u16 ZoneInEntitiesRequired; // 0xac
-        u8 unimplemented4[0x104 - 0xAE];
+        u8 unimplemented4[0xF4 - 0xAE];
+        u32 MenuConfigFlags; // 0xf4
+        u32 ChatFilterFlags0; // 0xf8
+        u32 ChatFilterFlags1; // 0xfc
+        u32 Unknown100; // 0x100 (for debug only? ROM requirements?)
     } ZoneInPacket;
 ]]
 
