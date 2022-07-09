@@ -4,6 +4,7 @@ local PacketFilter = {}
 function PacketFilter:start()
 end
 
+---@return table|nil
 function PacketFilter:finish()
 end
 

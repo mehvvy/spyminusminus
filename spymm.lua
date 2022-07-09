@@ -1,5 +1,6 @@
 local argparse = require('argparse')
 local sqlite3 = require('lsqlite3')
+local json = require('cjson')
 
 local xiffi = require('xiffi/xiffi')
 
@@ -58,23 +59,18 @@ local function printf(fmt, ...)
 end
 
 local parser = argparse('spymm', 'Packet extractor')
-parser:argument('database', 'Packet database')
+parser:argument('script', 'Packet script')
+parser:argument('output', 'Script output')
+parser:argument('database', 'Packet database'):args('+')
 
 local args = parser:parse()
-
-local ret, db, _errCode, errMsg = pcall(function ()
-    return sqlite3.open(args.database, sqlite3.OPEN_READONLY)
-end)
-
-if not (ret and db) then
-    printf('%s: unable to open "%s": %s\n', arg[0], args.database, db or errMsg)
-    return
-end
 
 ---@param filename string
 ---@return PacketFilter?, string?
 local function fromfile(filename)
     local env = {
+        tonumber = tonumber,
+        tostring = tostring,
     }
 
     local s, err = loadfile(filename, 't', env)
@@ -98,25 +94,37 @@ end
 ---@param script PacketFilter
 local function start(script)
     if script.start then
-        local pret, fret = pcall(script.start)
+        local pret, fret = pcall(script.start, script)
+        if not pret then
+            error(fret)
+        end
         return pret and fret
     end
     return true
 end
 
 ---@param script PacketFilter
+---@return table|nil
 local function finish(script)
     if script.finish then
-        local pret, fret = pcall(script.finish)
-        return pret and fret
+        local pret, fret = pcall(script.finish, script)
+        if not pret then
+            error(fret)
+        end
+        if pret then
+            return fret
+        end
     end
-    return true
+    return nil
 end
 
 ---@param script PacketFilter
 local function beginsession(script)
     if script.beginsession then
-        local pret, fret = pcall(script.beginsession)
+        local pret, fret = pcall(script.beginsession, script)
+        if not pret then
+            error(fret)
+        end
         return pret and fret
     end
     return true
@@ -125,7 +133,10 @@ end
 ---@param script PacketFilter
 local function endsession(script)
     if script.endsession then
-        local pret, fret = pcall(script.endsession)
+        local pret, fret = pcall(script.endsession, script)
+        if not pret then
+            error(fret)
+        end
         return pret and fret
     end
     return true
@@ -134,85 +145,70 @@ end
 ---@param script PacketFilter
 ---@return boolean
 local function process(script, row, p)
-    local pret, fret = pcall(script.process)
+    local pret, fret = pcall(script.process, script, row, p)
+    if not pret then
+        error(fret)
+    end
     return pret and fret
 end
 
-local testscripts = {}
-
-local function loadtestscripts()
-    local testfiles = {
-        './spymm/scripts/test0.lua',
-        './spymm/scripts/test1.lua',
-        './spymm/scripts/test2.lua',
-        './spymm/scripts/test3.lua',
-        './spymm/scripts/test4.lua',
-    }
-
-    for _, filename in ipairs(testfiles) do
-        local s, e = fromfile(filename)
-
-        if not s then
-            error(e)
-        end
-
-        testscripts[filename] = s
-    end
+local script, err = fromfile(args.script)
+if not script then
+    error(err)
 end
 
-local function testcall(fn, ...)
-    local success = false -- true, just a placeholder until the actual json functionality is working.
-    for _, s in pairs(testscripts) do
-        if s[fn] then
-            local pret, fret = pcall(s[fn], s, ...)
-            if not pret then
-                error(fret)
-            end
-            success = success or fret
-        end
-    end
+start(script)
 
-    return success
-end
+for _, database in ipairs(args.database) do
+    printf('Loading "%s"...\n', database)
+    local ret, db, _errCode, errMsg = pcall(function ()
+        return sqlite3.open(database, sqlite3.OPEN_READONLY)
+    end)
 
-loadtestscripts()
+    if not (ret and db) then
+        printf('%s: unable to open "%s": %s\n', arg[0], database, db or errMsg)
+    else
+        printf('Parsing "%s"...\n', database)
 
-testcall('start')
+        beginsession(script)
 
-testcall('beginsession')
+        for row in db:nrows('SELECT created_at, kind, type, data FROM entry WHERE kind IN (4,5) ORDER BY ticks') do
+            local input = false
+            local conv = nil
 
-for row in db:nrows('SELECT created_at, kind, type, data FROM entry WHERE kind IN (4,5) ORDER BY ticks') do
-    local input = false
-    local conv = nil
-
-    if row.kind == 4 then
-        -- server to client
-        input = true
-        conv = iPacketTypes[row.type]
-    elseif row.kind == 5 then
-        -- client to server
-        conv = oPacketTypes[row.type]
-    end
-
-    if conv ~= nil then
-        local p = conv(row.data)
-
-        if testcall('process', row, p) then
             if row.kind == 4 then
-                f = iParsers[row.type]
+                -- server to client
+                input = true
+                conv = iPacketTypes[row.type]
             elseif row.kind == 5 then
-                f = oParsers[row.type]
+                -- client to server
+                conv = oPacketTypes[row.type]
             end
 
-            if f ~= nil then
-                f(row, p)
+            if conv ~= nil then
+                local p = conv(row.data)
+                process(script, row, p)
+    --[[
+                    if row.kind == 4 then
+                        f = iParsers[row.type]
+                    elseif row.kind == 5 then
+                        f = oParsers[row.type]
+                    end
+
+                    if f ~= nil then
+                        f(row, p)
+                    end
+    ]]
             end
         end
+
+        endsession(script)
+
+        db:close()
     end
 end
 
-testcall('endsession')
-
-db:close()
-
-testcall('finish')
+local out = finish(script)
+if out then
+    print(json.encode(out))
+end
