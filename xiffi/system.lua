@@ -20,6 +20,7 @@ local SetSendDelayPacket = {}
 
 ffi.cdef[[
     typedef struct SetSendDelayPacket {
+        u32 Header;
         u32 SendDelay;
     } SetSendDelayPacket;
 ]]
