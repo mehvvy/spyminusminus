@@ -2,6 +2,7 @@ local argparse = require('argparse')
 local sqlite3 = require('lsqlite3')
 
 local xiffi = require('xiffi/xiffi')
+
 local parsers = require('spymm/parsers')
 
 local iParsers = {
@@ -70,23 +71,115 @@ if not (ret and db) then
     return
 end
 
--- example filter for testing
-local function filter(row, p)
-    if row.kind == 4 then
-        if row.type == 0x00A then
-            return true
+---@param filename string
+---@return PacketFilter?, string?
+local function fromfile(filename)
+    local env = {
+    }
+
+    local s, err = loadfile(filename, 't', env)
+
+    if err then
+        return nil, err
+    end
+    if not s then
+        -- to satisy the typechecker
+        return nil, 'failed to load'
+    end
+
+    local res, obj = pcall(s)
+    if not res then
+        return nil, obj
+    end
+
+    return obj
+end
+
+---@param script PacketFilter
+local function start(script)
+    if script.start then
+        local pret, fret = pcall(script.start)
+        return pret and fret
+    end
+    return true
+end
+
+---@param script PacketFilter
+local function finish(script)
+    if script.finish then
+        local pret, fret = pcall(script.finish)
+        return pret and fret
+    end
+    return true
+end
+
+---@param script PacketFilter
+local function beginsession(script)
+    if script.beginsession then
+        local pret, fret = pcall(script.beginsession)
+        return pret and fret
+    end
+    return true
+end
+
+---@param script PacketFilter
+local function endsession(script)
+    if script.endsession then
+        local pret, fret = pcall(script.endsession)
+        return pret and fret
+    end
+    return true
+end
+
+---@param script PacketFilter
+---@return boolean
+local function process(script, row, p)
+    local pret, fret = pcall(script.process)
+    return pret and fret
+end
+
+local testscripts = {}
+
+local function loadtestscripts()
+    local testfiles = {
+        './spymm/scripts/test0.lua',
+        './spymm/scripts/test1.lua',
+        './spymm/scripts/test2.lua',
+        './spymm/scripts/test3.lua',
+        './spymm/scripts/test4.lua',
+    }
+
+    for _, filename in ipairs(testfiles) do
+        local s, e = fromfile(filename)
+
+        if not s then
+            error(e)
         end
 
-        if row.type == 0x00E then
-            ---@cast p EntityUpdatePacket
-            if p.UpdateFlags04 and p.RequiredEntity then
-                return true
+        testscripts[filename] = s
+    end
+end
+
+local function testcall(fn, ...)
+    local success = false -- true, just a placeholder until the actual json functionality is working.
+    for _, s in pairs(testscripts) do
+        if s[fn] then
+            local pret, fret = pcall(s[fn], s, ...)
+            if not pret then
+                error(fret)
             end
+            success = success or fret
         end
     end
 
-    return false
+    return success
 end
+
+loadtestscripts()
+
+testcall('start')
+
+testcall('beginsession')
 
 for row in db:nrows('SELECT created_at, kind, type, data FROM entry WHERE kind IN (4,5) ORDER BY ticks') do
     local input = false
@@ -104,7 +197,7 @@ for row in db:nrows('SELECT created_at, kind, type, data FROM entry WHERE kind I
     if conv ~= nil then
         local p = conv(row.data)
 
-        if filter(row, p) then
+        if testcall('process', row, p) then
             if row.kind == 4 then
                 f = iParsers[row.type]
             elseif row.kind == 5 then
@@ -118,4 +211,8 @@ for row in db:nrows('SELECT created_at, kind, type, data FROM entry WHERE kind I
     end
 end
 
+testcall('endsession')
+
 db:close()
+
+testcall('finish')
