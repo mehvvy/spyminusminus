@@ -239,6 +239,16 @@ xiffi.toReleasePacket = function (ptr)
     return cast('ReleasePacket*', ptr)
 end
 
+--- System
+
+require('xiffi.system')
+
+---@param ptr integer
+---@return SetSendDelayPacket
+xiffi.toSetSendDelayPacket = function (ptr)
+    return cast('SetSendDelayPacket*', ptr)
+end
+
 --- Zone
 
 require('xiffi.zone')
