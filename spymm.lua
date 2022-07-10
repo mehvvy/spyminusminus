@@ -65,10 +65,18 @@ parser:argument('database', 'Packet database'):args('+')
 
 local args = parser:parse()
 
+-- as a safety measure, check thgat the output filename ends in ".json"
+if not args.output:find('[.]json', -5) then
+    error('Output file extension is .not ".json"')
+end
+
 ---@param filename string
 ---@return PacketFilter?, string?
 local function fromfile(filename)
     local env = {
+        ipairs = ipairs,
+        pairs = pairs,
+
         tonumber = tonumber,
         tostring = tostring,
     }
@@ -159,8 +167,8 @@ end
 
 start(script)
 
-for _, database in ipairs(args.database) do
-    printf('Loading "%s"...\n', database)
+for i, database in ipairs(args.database) do
+    printf('Loading "%s" (%d of %d)...\n', database, i, #args.database)
     local ret, db, _errCode, errMsg = pcall(function ()
         return sqlite3.open(database, sqlite3.OPEN_READONLY)
     end)
@@ -210,5 +218,11 @@ end
 
 local out = finish(script)
 if out then
-    print(json.encode(out))
+    local f = io.open(args.output, "wt")
+    if not f then
+        error('Unable to open output file for writing')
+    end
+
+    f:write(json.encode(out))
+    f:close()
 end
