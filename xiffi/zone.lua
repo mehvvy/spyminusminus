@@ -16,6 +16,9 @@ ffi.cdef[[
 
 ---@class ZoneInPacket
 ---@field ZoneId integer
+---@field ServerMiliseconds integer
+---@field ServerUtcTimestamp integer
+---@field ServerVanaTimestamp integer
 ---@field ZoneInEventFileId integer
 ---@field ZoneInEventZoneId integer
 ---@field ZoneInEventId integer
@@ -38,7 +41,9 @@ ffi.cdef[[
     typedef struct ZoneInPacket {
         u8 unimplemented0[0x30];
         u32 ZoneId; // 0x30
-        u8 unimplemented5[0x40 - 0x34];
+        u32 ServerMiliseconds; // 0x34
+        u32 ServerUtcTimestamp; // 0x38
+        u32 ServerVanaTimestamp; // 0x3c
         u16 ZoneInEventFileId; // 0x40
         u8 unimplemented1[0x62 - 0x42];
         u16 ZoneInEventZoneId; // 0x62
