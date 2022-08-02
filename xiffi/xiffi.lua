@@ -239,6 +239,12 @@ xiffi.toReleasePacket = function (ptr)
     return cast('ReleasePacket*', ptr)
 end
 
+---@param ptr integer
+---@return Message3BPacket
+xiffi.toMessage3BPacket = function (ptr)
+    return cast('Message3BPacket*', ptr)
+end
+
 --- System
 
 require('xiffi.system')

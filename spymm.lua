@@ -15,6 +15,8 @@ local iParsers = {
     [0x033] = parsers.eventStringPacket,
     [0x034] = parsers.eventParamPacket,
 
+    [0x03B] = nil,
+
     [0x052] = parsers.releasePacket,
 
     [0x057] = parsers.weatherPacket,
@@ -38,6 +40,8 @@ local iPacketTypes = {
     [0x032] = xiffi.toEventPacket,
     [0x033] = xiffi.toEventStringPacket,
     [0x034] = xiffi.toEventParamPacket,
+
+    [0x03B] = xiffi.toMessage3BPacket,
 
     [0x052] = xiffi.toReleasePacket,
 
@@ -74,6 +78,8 @@ end
 ---@return PacketFilter?, string?
 local function fromfile(filename)
     local env = {
+        printf = printf,
+
         ipairs = ipairs,
         pairs = pairs,
 

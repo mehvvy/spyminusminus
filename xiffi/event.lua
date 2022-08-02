@@ -129,4 +129,21 @@ ffi.cdef[[
     } ReleasePacket;
 ]]
 
+---@class Message3BPacket
+---@field EntityId integer
+---@field EntityIndex integer
+---@field MessageId integer
+---@field ShowName boolean
+local Message3BPacket = {}
+
+ffi.cdef[[
+    typedef struct Message3BPacket {
+        u32 Header;
+        u32 EntityId;
+        u16 EntityIndex;
+        u16 MessageId : 15;
+        bool ShowName : 1;
+    } Message3BPacket;
+]]
+
 --- also see ZoneInPacket
