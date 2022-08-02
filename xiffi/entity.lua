@@ -69,13 +69,13 @@ local ffi = require('ffi')
 ---@field _24_30 integer
 ---@field _24_31 integer
 ---@field Flags4 integer
----@field _28_0 integer
+---@field IsTrust boolean
 ---@field _28_1 integer
----@field _28_2 integer
+---@field WhooshAnimation boolean
 ---@field _28_3 integer
 ---@field _28_4 integer
 ---@field _28_5 integer
----@field _28_6 integer
+---@field IsInteractable boolean
 ---@field _28_7 integer
 ---@field _28_8 integer
 ---@field _28_16 integer
@@ -167,13 +167,13 @@ byte o.    bit o.      length      update       name
 24             29           1           4       ?
 24             30           1           4       ?
 24             31           1           4       ?
-28              0           1           4       ?
+28              0           1           4       IsTrust
 28              1           1           ?       ? (unused?)
-28              2           1           4       ?
+28              2           1           4       WhooshAnimation
 28              3           1           4       ?
 28              4           1           4       ?
 28              5           1           4       ?
-28              6           1           4       ?
+28              6           1           4       IsInteractable
 28              7           1           4       ?
 28              8           8           4       ?
 28             16           2           4       ?
@@ -302,13 +302,13 @@ ffi.cdef[[
 
         union {
             struct {
-               u32 _28_0 : 1;
+               bool IsTrust : 1;
                u32 _28_1 : 1;
-               u32 _28_2 : 1;
+               bool WhooshAnimation : 1; // Entity plays spop animation when appearing
                u32 _28_3 : 1;
                u32 _28_4 : 1;
                u32 _28_5 : 1;
-               u32 _28_6 : 1;
+               bool IsInteractable : 1; // Required by dynamic entities in order to perform actions on them
                u32 _28_7 : 1;
                u32 _28_8 : 8;
                u32 _28_16 : 2;
