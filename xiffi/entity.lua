@@ -76,7 +76,7 @@ local ffi = require('ffi')
 ---@field _28_4 integer
 ---@field _28_5 integer
 ---@field IsInteractable boolean
----@field _28_7 integer
+---@field NoOcclusionTest boolean
 ---@field _28_8 integer
 ---@field _28_16 integer
 ---@field _28_18 integer
@@ -174,7 +174,7 @@ byte o.    bit o.      length      update       name
 28              4           1           4       ?
 28              5           1           4       ?
 28              6           1           4       IsInteractable
-28              7           1           4       ?
+28              7           1           4       NoOcclusionTest
 28              8           8           4       ?
 28             16           2           4       ?
 28             18           1           ?       ? (unused?)
@@ -309,7 +309,7 @@ ffi.cdef[[
                u32 _28_4 : 1;
                u32 _28_5 : 1;
                bool IsInteractable : 1; // Required by dynamic entities in order to perform actions on them
-               u32 _28_7 : 1;
+               bool NoOcclusionTest : 1; // Do not perform an occlusion test for these entities' models
                u32 _28_8 : 8;
                u32 _28_16 : 2;
                u32 _28_18 : 1;
