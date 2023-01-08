@@ -245,6 +245,12 @@ xiffi.toMessage3BPacket = function (ptr)
     return cast('Message3BPacket*', ptr)
 end
 
+---@param ptr integer
+---@return EventFinishPacket
+xiffi.toEventFinishPacket = function (ptr)
+    return cast('EventFinishPacket*', ptr)
+end
+
 --- System
 
 require('xiffi.system')

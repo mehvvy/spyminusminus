@@ -55,7 +55,7 @@ local iPacketTypes = {
 }
 
 local oPacketTypes = {
-
+    [0x05B] = xiffi.toEventFinishPacket,
 }
 
 local function printf(fmt, ...)
@@ -78,6 +78,8 @@ end
 ---@return PacketFilter?, string?
 local function fromfile(filename)
     local env = {
+        bit = bit,
+
         printf = printf,
 
         ipairs = ipairs,

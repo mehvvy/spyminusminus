@@ -147,3 +147,29 @@ ffi.cdef[[
 ]]
 
 --- also see ZoneInPacket
+
+---
+--- Outgoing
+---
+
+-- 5B
+---@class EventFinishPacket
+---@field EntityId integer
+---@field EntityIndex integer
+---@field ZoneId integer
+---@field EventId integer
+---@field IsUpdate boolean
+---@field EventResult integer
+local EventFinishPacket = {}
+
+ffi.cdef[[
+    typedef struct EventFinishPacket {
+        u32 Header;
+        u32 EntityId;
+        u32 EventResult;
+        u16 EntityIndex;
+        u16 IsUpdate;
+        u16 ZoneId;
+        u16 EventId;
+    } EventFinishPacket;
+]]
